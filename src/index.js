@@ -95,16 +95,116 @@ class Dayjs {
     this.init()
   }
 
+  // Based onhttps://github.com/facebook/hermes/issues/930#issuecomment-2027601318
   init() {
-    const { $d } = this
-    this.$y = $d.getFullYear()
-    this.$M = $d.getMonth()
-    this.$D = $d.getDate()
-    this.$W = $d.getDay()
-    this.$H = $d.getHours()
-    this.$m = $d.getMinutes()
-    this.$s = $d.getSeconds()
-    this.$ms = $d.getMilliseconds()
+    this.cached_y = undefined
+    this.cached_M = undefined
+    this.cached_D = undefined
+    this.cached_W = undefined
+    this.cached_H = undefined
+    this.cached_m = undefined
+    this.cached_s = undefined
+    this.cached_ms = undefined
+    this.cached_timezoneOffset = undefined
+  }
+
+  get $y() {
+    if (this.cached_y === undefined) {
+      this.cached_y = this.$d.getFullYear()
+    }
+    return this.cached_y
+  }
+
+  set $y(value) {
+    this.cached_y = value
+  }
+
+  get $M() {
+    if (this.cached_M === undefined) {
+      this.cached_M = this.$d.getMonth()
+    }
+    return this.cached_M
+  }
+
+  set $M(value) {
+    this.cached_M = value
+  }
+
+  get $D() {
+    if (this.cached_D === undefined) {
+      this.cached_D = this.$d.getDate()
+    }
+    return this.cached_D
+  }
+
+  set $D(value) {
+    this.cached_D = value
+  }
+
+  get $W() {
+    if (this.cached_W === undefined) {
+      this.cached_W = this.$d.getDay()
+    }
+    return this.cached_W
+  }
+
+  set $W(value) {
+    this.cached_W = value
+  }
+
+  get $H() {
+    if (this.cached_H === undefined) {
+      this.cached_H = this.$d.getHours()
+    }
+    return this.cached_H
+  }
+
+  set $H(value) {
+    this.cached_H = value
+  }
+
+  get $m() {
+    if (this.cached_m === undefined) {
+      this.cached_m = this.$d.getMinutes()
+    }
+    return this.cached_m
+  }
+
+  set $m(value) {
+    this.cached_m = value
+  }
+
+  get $s() {
+    if (this.cached_s === undefined) {
+      this.cached_s = this.$d.getSeconds()
+    }
+    return this.cached_s
+  }
+
+  set $s(value) {
+    this.cached_s = value
+  }
+
+  get $ms() {
+    if (this.cached_ms === undefined) {
+      this.cached_ms = this.$d.getMilliseconds()
+    }
+    return this.cached_ms
+  }
+
+  set $ms(value) {
+    this.cached_ms = value
+  }
+
+  get $timezoneOffset() {
+    if (this.cached_timezoneOffset === undefined) {
+      this.cached_timezoneOffset = this.$d.getTimezoneOffset()
+    }
+    return this.cached_timezoneOffset
+  }
+
+  set $timezoneOffset(value) {
+    this.cached_timezoneOffset = value
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -118,14 +218,37 @@ class Dayjs {
 
   isSame(that, units) {
     const other = dayjs(that)
+
+    if (units === undefined) {
+      if (!this.isValid() || !other.isValid()) {
+        return false
+      }
+      return this.toISOString() === other.toISOString()
+    }
     return this.startOf(units) <= other && other <= this.endOf(units)
   }
 
   isAfter(that, units) {
+    if (units === undefined) {
+      const other = dayjs(that)
+      if (!this.isValid() || !other.isValid()) {
+        return false
+      }
+      return this.toISOString() > other.toISOString()
+    }
+
     return dayjs(that) < this.startOf(units)
   }
 
   isBefore(that, units) {
+    if (units === undefined) {
+      const other = dayjs(that)
+      if (!this.isValid() || !other.isValid()) {
+        return false
+      }
+      return this.toISOString() < other.toISOString()
+    }
+
     return this.endOf(units) < dayjs(that)
   }
 
